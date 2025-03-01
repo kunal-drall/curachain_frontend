@@ -1,1 +1,0 @@
-# curachain_frontend
