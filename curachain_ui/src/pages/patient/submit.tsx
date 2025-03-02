@@ -6,10 +6,10 @@ import { Layout } from '../../components/layout/Layout';
 import { PatientService } from '../../services/patientService';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
-import { NodeWallet } from '@coral-xyz/anchor/dist/cjs/provider';
+import { AnchorWalletAdapter } from '../../utils/wallet-adapter';
 
 const SubmitCasePage = () => {
-  const { publicKey, signTransaction, signAllTransactions } = useWallet();
+  const wallet = useWallet();
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [description, setDescription] = useState('');
@@ -21,7 +21,7 @@ const SubmitCasePage = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!publicKey || !signTransaction || !signAllTransactions) {
+    if (!wallet.publicKey || !wallet.signTransaction || !wallet.signAllTransactions) {
       setError('Please connect your wallet first.');
       return;
     }
@@ -38,13 +38,9 @@ const SubmitCasePage = () => {
       // For demo purposes, we're using the public records link directly
       // In a real app, you should encrypt this data before sending it to the blockchain
       const connection = new Connection(process.env.NEXT_PUBLIC_RPC_URL || 'https://api.devnet.solana.com');
-      const wallet = new NodeWallet({
-        publicKey,
-        signTransaction,
-        signAllTransactions,
-      });
+      const anchorWallet = new AnchorWalletAdapter(wallet);
       
-      const patientService = new PatientService(connection, wallet);
+      const patientService = new PatientService(connection, anchorWallet);
       const result = await patientService.submitCase(
         description,
         parseInt(amountNeeded),
@@ -79,7 +75,7 @@ const SubmitCasePage = () => {
       <div className="max-w-2xl mx-auto">
         <h1 className="text-3xl font-bold text-center mb-8">Submit Medical Case</h1>
         
-        {!publicKey ? (
+        {!wallet.publicKey ? (
           <div className="text-center p-6 bg-yellow-50 rounded-lg">
             <p className="text-yellow-700 mb-4">Please connect your wallet to submit a case.</p>
           </div>
