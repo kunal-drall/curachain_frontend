@@ -127,7 +127,8 @@ export const CaseCard: React.FC<CaseCardProps> = ({ caseData, compact = false })
           <Link href={`/cases/${caseId}`} className="btn btn-primary">
             View Details
           </Link>
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  };

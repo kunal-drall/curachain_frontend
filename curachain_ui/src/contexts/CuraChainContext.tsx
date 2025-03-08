@@ -124,10 +124,12 @@ export function CuraChainProvider({ children }: { children: ReactNode }) {
     try {
       // Create dummy wallet for program
       const dummyWallet = new anchor.Wallet(anchor.web3.Keypair.generate());
+      const programId = new PublicKey(process.env.NEXT_PUBLIC_PROGRAM_ID!);
+      const provider = new anchor.AnchorProvider(connection, dummyWallet, { commitment: 'processed' });
       const program = new anchor.Program(
         require('../idl/curachain.json'),
-        new PublicKey(process.env.NEXT_PUBLIC_PROGRAM_ID!),
-        new anchor.AnchorProvider(connection, dummyWallet, { commitment: 'processed' })
+        programId,
+        provider
       );
       
       // Check roles in parallel

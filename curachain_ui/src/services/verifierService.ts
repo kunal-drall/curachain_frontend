@@ -124,8 +124,8 @@ export class VerifierService {
         hasCurrentVerifierVoted: patientCase.votedVerifiers.some(
           pubkey => pubkey.toString() === this.wallet.publicKey.toString()
         )
-      };
-    } catch (error) {
+      }
+    , catch (error) {
       console.error("Error getting case verification status:", error);
       throw error;
     }
